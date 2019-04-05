@@ -30,31 +30,35 @@
     <div class="container">
         <h1>{{ page_title }}</h1>
         <div class="row">   
-            <div class="col-8">
-                {% with messages = get_flashed_messages() %}
-                    {% if messages %}
-                    <div class="alert alert-warning" role="alert">
-                        {% for message in messages %}
-                            {{ message }}<br>
-                        {% endfor %}
-                    </div>
-                    {% endif %}
-                {% endwith %}
-                <h2>News</h2>
-                {% for news in news_list %}
-                <h3><a href="{{ news.url }}">{{ news.title }}</a></h3>  
-                <p>{{ news.published.strftime('%Y-%m-%d') }}</p>
-                <hr /> 
-                {% endfor %}
-            </div>
             <div class="col-4">
-                <h2>Weather</h2>
-                {% if weather %}
-                    Weather is {{ weather.temp_C }}, feels like {{ weather.FeelsLikeC}}
-                {% else %}
-                    Service is unavailable
-            {% endif %}
+              {% with messages = get_flashed_messages() %}
+                {% if messages %}
+                <div class="alert alert-warning" role="alert">
+                  {% for message in messages %}
+                    {{ message }}<br>
+                  {% endfor %}
+                </div>
+                {% endif %}
+              {% endwith %}
+
+            	<form action="{{ url_for('process_login') }}" method="POST">
+            		{{ form.hidden_tag() }}
+					<div class="form-group">
+	            		{{ form.username.label }}
+	            		{{ form.username }}
+            		</div>
+            		<div class="form-group">
+            			{{ form.password.label }} <br>
+            			{{ form.password }}
+            		</div>
+            		<div class="form-group">
+            			{{ form.submit }}
+            		</div>
+                
             </div>
+            <div class="col-8">
+            </div>
+
         </div>
     </div>
 
