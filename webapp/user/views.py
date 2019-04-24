@@ -57,5 +57,4 @@ def process_reg():
         for field, errors in form.errors.items():
             for error in errors:
                 flash('Error in field {}: {}'.format(getattr(form, field).label.text, error))
-    flash('Check the form!')
     return redirect(url_for('user.register'))
