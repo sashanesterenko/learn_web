@@ -8,7 +8,7 @@ blueprint = Blueprint('news', __name__)
 def index():
     title = "LP News"
     weather = weather_by_city(current_app.config['WEATHER_DEFAULT_CITY'])
-    news_list = News.query.order_by(News.published.desc()).all()
+    news_list = News.query.filter(News.text.isnot(None)).redis-server /usr/local/etc/redis.conforder_by(News.published.desc()).all()
     return render_template('news/index.html', page_title=title, weather=weather, news_list=news_list)
 
 @blueprint.route('/news/<int:news_id>')
