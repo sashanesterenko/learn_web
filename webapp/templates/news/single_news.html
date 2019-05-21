@@ -4,6 +4,27 @@
     <div class="row">   
         <div class="col-8 news-content">
             {{ news.text|safe }}
+            {% if news.comments %}
+                <h3>Comments:</h3>
+                {% for comment in news.comments %}
+                <div class="card">
+                    <div class="card-body">
+                        <p class="card-text"> {{ comment.text }}</p>
+                        <p class="card-text">
+                            <small>Published: {{ comment.created.strftime('%d.%m.%Y')}} | Author: {{ comment.user.username }} </small>
+                        </p> 
+                    </div>
+                </div>
+                {% endfor %}
+            {% endif %}
+            <form action=" {{ url_for('news.add_comment') }}" method="POST">
+                {{ comment_form.hidden_tag() }}
+                <div class="form-group">
+                    {{ comment_form.comment_text.label }}
+                    {{ comment_form.comment_text() }}
+                </div>
+                {{ comment_form.submit() }}
+            </form>
         </div>
         <div class="col-4">
             <h2>Other news</h2>
