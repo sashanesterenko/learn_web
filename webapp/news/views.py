@@ -1,8 +1,13 @@
-from flask import abort, Blueprint, current_app, render_template
+from flask import abort, Blueprint, current_app, flash, render_template, redirect, request, url_for
+from flask_login import current_user, login_required
+from sqlalchemy.exc import OperationalError
 
+from webapp.db import db
 from webapp.news.forms import CommentForm
-from webapp.news.models import News
+from webapp.news.models import Comment, News
 from webapp.weather import weather_by_city
+from webapp.utils import get_redirect_target
+
 blueprint = Blueprint('news', __name__)
 
 @blueprint.route('/')
@@ -22,5 +27,22 @@ def single_news(news_id):
     return render_template('news/single_news.html', page_title=my_news.title, news=my_news, comment_form=comment_form)
 
 @blueprint.route('/news/comment', methods=['POST'])
+@login_required
 def add_comment():
-    pass
+    form = CommentForm()
+    if form.validate_on_submit():
+        comment = Comment(text=form.comment_text.data, news_id=form.news_id.data, user_id=current_user.id)
+        db.session.add(comment)
+        try:
+            db.session.commit()
+            flash('Comment added')
+        except OperationalError:
+            db.session.rollback()
+            flash('Shit, db is locked')
+    else:
+        for field, errors in form.errors.items():
+            for error in errors:
+                flash('Error in field {}: {}'.format(getattr(form, field).label.text, error))
+    return redirect(request.get_redirect_target)
+
+
